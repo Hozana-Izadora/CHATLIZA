@@ -3,17 +3,22 @@ from PyQt5.QtWidgets import QMessageBox
 
 import tuple_environment as ts
 
-def openTela2(tela):
-    tela.show()
-
-def openTela3():
-    tela_3.show()
+   
 # data = [user,nick,status,latitude,longitude,distancia]
+
+def loadConfig(data):
+    tela_3.show()
+    if(data[2] == True):
+        tela_3.label_2.setText("ONLINE")
+    else:
+        tela_3.label_2.setText("OFFLINE")
+
 def loadInfo(data):
     novaTelaChat = uic.loadUi("tela_2.ui")
+
     telasChat.append(novaTelaChat)
     for tela in telasChat:
-        openTela2(tela)
+        tela.show()
         tela.listWidget.clear()
         tela.listWidget_2.clear()
 
@@ -35,8 +40,8 @@ def loadInfo(data):
             for off in offline:
                 tela.listWidget_2.addItem("@"+off)
 
-        tela.label_7.setText(status)    
-        tela.pushButton.clicked.connect(openTela3) 
+        tela.label_7.setText(status)
+        tela.pushButton.clicked.connect(loadConfig(data))     
 
 def createUser():
     user = tela_1.lineEdit.text()
@@ -58,9 +63,8 @@ def createUser():
 telasChat = []
 app=QtWidgets.QApplication([])
 tela_1 = uic.loadUi("tela_1.ui")
-tela_3 = uic.loadUi("tela_3.ui")
-# telaAtual = uic.loadUi("tela_2.ui")
 tela_1.show()
 tela_1.pushButton.clicked.connect(createUser) 
+tela_3 = uic.loadUi("tela_3.ui")    
 
 app.exec()
