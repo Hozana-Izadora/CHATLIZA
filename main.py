@@ -60,11 +60,15 @@ def createUser():
     else:
         QMessageBox.about(tela_1,"ALERTA", "ESTE NICK JÁ EXISTE")  
 
+def updateStatus():
+    status =  tela_3.radioButton.isChecked()
+    
+
 telasChat = []
 app=QtWidgets.QApplication([])
 tela_1 = uic.loadUi("tela_1.ui")
 tela_1.show()
 tela_1.pushButton.clicked.connect(createUser) 
 tela_3 = uic.loadUi("tela_3.ui")    
-
+tela_3.pushButton.clicked.connect(updateStatus)
 app.exec()
