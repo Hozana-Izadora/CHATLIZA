@@ -1,7 +1,7 @@
 import linsimpy
 tse = linsimpy.TupleSpaceEnvironment()
-
-
+# 'izadora','iza',True,1,2,3
+# ("USER", nick, user, status, latitude, longitude, distancia)
 def checkNick(nick):
     try:
         tse.rdp(("NICK", nick))
@@ -17,9 +17,9 @@ def createUser(data):
     distancia = data[5]
 
     tse.out(("NICK",nick))
-    tse.out(("USER", nick, user, status, latitude, longitude, distancia))
+    tse.out(("USER", nick, [user, status, latitude, longitude, distancia]))
 
-    user = tse.rdp(("USER",nick,user, status, latitude, longitude, distancia))
+    user = tse.rdp(("USER",nick,[user, status, latitude, longitude, distancia]))
     print(f"User created {user}")
     if(status == True):
         try:
@@ -39,21 +39,12 @@ def createUser(data):
         except:
             tsOffline = [nick]
             tse.out(("OFFLINE",tuple(tsOffline)))
-        
-def updateUser(data):
-    user = data[0]
-    nick = data[1]
-    status = data[2]
-    latitude = data[3]
-    longitude = data[4]
-
 def readUser(nick):
     try:
-        user = tse.rdp(("USER",nick))
+        user = tse.rdp(("USER",nick, object))
         return user
     except:
         return("User not found")
-
 def listOnline():
     try:
         online = tse.rdp(("ONLINE",object))    
@@ -68,32 +59,45 @@ def listOffline():
         return list(offline[1])
     except: 
         print(f"Tuple matching not found")
-
-def updateStatusOnline(nick):
+def updateStatus(nick,status):
+    tsOnline = []
+    tsOffline = []
+    user = tse.inp(("USER",nick,object))
+    tsUser = list(user[2])
+    tsUser[1] = status
+    tse.out(("USER",nick,tsUser))
     
-    statusOnline =[]
-    try:
-        online = tse.inp(("ONLINE",object))
-        statusOnline = list(online[1])
-        statusOnline.append(nick)
-        tse.out(("ONLINE",statusOnline))
-        statusOnline = tse.rdp(("ONLINE",object))
-        return statusOnline[1]
-    except:
-        tse.out(("ONLINE",nick))
-        statusOnline = tse.rdp(("ONLINE",object))
-        return statusOnline[1]
+    if(status == True):
+        try:
+            offline   = tse.inp(("OFFLINE",object))
+            tsOffline = list(offline[1])
+            tsOffline.remove(nick)
+            tse.out(("OFFLINE",tuple(tsOffline)))
 
-def updateStatusOffline(nick):
-    statusOffline =[]
-    try:
-        offline = tse.inp(("OFFLINE",object))
-        statusOffline = list(offline[1])
-        statusOffline.append(nick)
-        tse.out(("OFFLINE",statusOffline))
-        statusOffline = tse.rdp(("OFFLINE",object))
-        return statusOffline[1]
-    except:
-        tse.out(("OFFLINE",tuple(nick)))
-        statusOffline = tse.rdp(("OFFLINE",object))
-        return statusOffline[1]
+            online    = tse.inp(("ONLINE",object))
+            tsOnline  = list(online[1])
+            tsOnline.append(nick)
+            tse.out(("ONLINE",tuple(tsOffline)))
+        except:
+            tsOnline = [nick]
+            tse.out(("ONLINE",tuple(tsOnline)))
+    else:
+        try:
+            online   = tse.inp(("ONLINE",object))
+            tsOnline = list(online[1])
+            tsOnline.remove(nick)
+            tse.out(("ONLINE",tuple(tsOnline)))
+
+            offline    = tse.inp(("OFFLINE",object))
+            tsOffline  = list(offline[1])
+            tsOffline.append(nick)
+            tse.out(("OFFLINE",tuple(tsOffline)))
+        except:
+            tsOffline = [nick]
+            tse.out(("OFFLINE",tuple(tsOnline)))
+
+    dataUser = tse.rdp(("USER",nick,object))
+    return dataUser      
+
+createUser(['izadora','iza',True,1,2,3])
+updateStatus('iza',False)
