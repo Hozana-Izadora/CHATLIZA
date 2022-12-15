@@ -1,15 +1,15 @@
-from PyQt5 import uic
+from PyQt5 import QtWidgets,uic
+
 from PyQt5.QtWidgets import QMessageBox
 import SecondWindow
 import tuple_environment as ts
 
 # data = [user,nick,status,latitude,longitude,distancia]
-class MainWindow():
+class MainWindow(QtWidgets.QMainWindow,Ui_MainWindow):
     def __init__(self):
         super(MainWindow,self).__init__()
         
         self.tela = uic.loadUi("tela_1.ui")
-        # self = uic.loadUi("tela_1.ui") 
         self.show()
         self.pushButton.clicked.connect(self.createUser) 
 
