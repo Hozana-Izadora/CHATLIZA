@@ -99,5 +99,3 @@ def updateStatus(nick,status):
     dataUser = tse.rdp(("USER",nick,object))
     return dataUser      
 
-createUser(['izadora','iza',True,1,2,3])
-updateStatus('iza',False)
